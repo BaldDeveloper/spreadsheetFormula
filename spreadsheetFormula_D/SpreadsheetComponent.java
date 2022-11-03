@@ -271,38 +271,7 @@ class SpreadsheetComponent extends JComponent {
          *  text fields and labels and allocate the array that
          *  holds the pieces.
          */
-		// ToDO: remove comment below
-        // setLayout(new GridLayout(gridWidth + 1, gridHeight + 1));
-
-		setLayout(new GridBagLayout());
-		GridBagConstraints gridBagContraints = new GridBagConstraints();
-
-//		final Dimension dim = new Dimension(70, 70);
-//		final int w = 4;
-//		final int h = 4;
-//		final JLabel[] yfloating = new JLabel[w];
-//		final JLabel[] xfloating = new JLabel[h];
-//		final JLabel[][] fixed = new JLabel[w][h];
-
-//		gridBagContraints.fill = GridBagConstraints.BOTH;
-//		gridBagContraints.weightx = 0.0;
-//		gridBagContraints.weighty = 1.0;
-//		for(int i = 0; i < 4; ++i) {
-//			yfloating[i] = new JLabel("floating " + i);
-//			yfloating[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//			yfloating[i].setHorizontalTextPosition(JLabel.CENTER);
-//			yfloating[i].setVerticalTextPosition(JLabel.CENTER);
-//			gridBagContraints.gridy = 0;
-//			gridBagContraints.gridx = i+1;
-//			add(yfloating[i], gridBagContraints);
-//		}
-
-
-				//setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
-
-
-
+        setLayout(new GridLayout(gridWidth + 1, gridHeight + 1));
         grid = new Cell[gridWidth][gridHeight];
         rowLabel = new JLabel[gridHeight];
         columnLabel = new JLabel[gridWidth];
@@ -313,17 +282,12 @@ class SpreadsheetComponent extends JComponent {
          */
         gridKeyHandler = new GridKeyHandler();
 
-		// ToDo: Handles alphabet across the top
 		add(new JLabel(" "));
         for (column = 0; (column < gridWidth); ++column) {
 			columnLabel[column] = new JLabel("" + (char)('A' + column),
 											 SwingConstants.CENTER);
 			columnLabel[column].setFont(monospacedFont);
-			//add(columnLabel[column]);
-			gridBagContraints.fill = GridBagConstraints.HORIZONTAL;
-			gridBagContraints.gridx = column;
-			gridBagContraints.gridy = 0;
-			add(columnLabel[column], gridBagContraints);
+			add(columnLabel[column]);
 		}
 
         /*
@@ -350,11 +314,7 @@ class SpreadsheetComponent extends JComponent {
                 thisCell.addKeyListener(gridKeyHandler);
                 thisCell.setFont(monospacedFont);
                 thisCell.setEditable(false);
-				gridBagContraints.fill = GridBagConstraints.VERTICAL;
-				gridBagContraints.gridx = column;
-				gridBagContraints.gridy = row;
-                //add(thisCell);
-				add(thisCell, gridBagContraints);
+                add(thisCell);
             }
         }
     }
