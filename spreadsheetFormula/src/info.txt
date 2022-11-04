@@ -1,0 +1,2 @@
+gridwidth is the number of columns
+gridy is the column

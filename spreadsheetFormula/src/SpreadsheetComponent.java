@@ -12,8 +12,8 @@ import expressions.*;
  *  @author Richard Barton
  */
 class SpreadsheetComponent extends JComponent {
-    private int         gridWidth       = 8;
-    private int         gridHeight      = 8;
+    private int         gridWidth       = 9;
+    private int         gridHeight      = 9;
     private int         fieldWidth      = 10;
     private Font        monospacedFont;
     private Cell		lastEditable;
@@ -277,32 +277,6 @@ class SpreadsheetComponent extends JComponent {
 		setLayout(new GridBagLayout());
 		GridBagConstraints gridBagContraints = new GridBagConstraints();
 
-//		final Dimension dim = new Dimension(70, 70);
-//		final int w = 4;
-//		final int h = 4;
-//		final JLabel[] yfloating = new JLabel[w];
-//		final JLabel[] xfloating = new JLabel[h];
-//		final JLabel[][] fixed = new JLabel[w][h];
-
-//		gridBagContraints.fill = GridBagConstraints.BOTH;
-//		gridBagContraints.weightx = 0.0;
-//		gridBagContraints.weighty = 1.0;
-//		for(int i = 0; i < 4; ++i) {
-//			yfloating[i] = new JLabel("floating " + i);
-//			yfloating[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//			yfloating[i].setHorizontalTextPosition(JLabel.CENTER);
-//			yfloating[i].setVerticalTextPosition(JLabel.CENTER);
-//			gridBagContraints.gridy = 0;
-//			gridBagContraints.gridx = i+1;
-//			add(yfloating[i], gridBagContraints);
-//		}
-
-
-				//setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
-
-
-
         grid = new Cell[gridWidth][gridHeight];
         rowLabel = new JLabel[gridHeight];
         columnLabel = new JLabel[gridWidth];
@@ -313,14 +287,18 @@ class SpreadsheetComponent extends JComponent {
          */
         gridKeyHandler = new GridKeyHandler();
 
+
+
 		// ToDo: Handles alphabet across the top
-		add(new JLabel(" "));
-        for (column = 0; (column < gridWidth); ++column) {
-			columnLabel[column] = new JLabel("" + (char)('A' + column),
+		gridBagContraints.gridx = 0;
+		gridBagContraints.gridy = 0;
+		add(new JLabel(" "), gridBagContraints);
+
+		// ToDo: Handles alphabet across the top gridwith - 9
+        for (column = 1; (column < gridWidth); ++column) {
+			columnLabel[column] = new JLabel("" + (char)('A' + column-1),
 											 SwingConstants.CENTER);
 			columnLabel[column].setFont(monospacedFont);
-			//add(columnLabel[column]);
-			gridBagContraints.fill = GridBagConstraints.HORIZONTAL;
 			gridBagContraints.gridx = column;
 			gridBagContraints.gridy = 0;
 			add(columnLabel[column], gridBagContraints);
@@ -329,31 +307,32 @@ class SpreadsheetComponent extends JComponent {
         /*
          *  Instantiate a text field for each cell.
          */
-        for (row = 0; (row < gridHeight); ++row) {
+        for (row = 1; (row < gridHeight); ++row) {
 			String	name;
-
-			name = "" + (row + 1);
+			// ToDo: Start of number column
+			name = "" + (row);
 			rowLabel[row] = new JLabel(name, SwingConstants.CENTER);
 			rowLabel[row].setFont(monospacedFont);
-			add(rowLabel[row]);
-            for (column = 0; (column < gridWidth); ++column) {
+			gridBagContraints.gridx = 0;
+			gridBagContraints.gridy = row;
+			add(rowLabel[row], gridBagContraints);
+
+			// ToDo: Start of empty grid
+            for (column = 1; (column < gridWidth); ++column) {
 				Cell	thisCell;
 
                 /*
                  *  Instantiate and configure this text field.
                  */
-				thisCell = new Cell((char)('A' + column) + name,
-									fieldWidth);
+				thisCell = new Cell((char)('A' + column) + name, fieldWidth);
 				grid[row][column] = thisCell;
                 thisCell.addMouseListener(new MouseHandler(row,
                 										   column));
                 thisCell.addKeyListener(gridKeyHandler);
                 thisCell.setFont(monospacedFont);
                 thisCell.setEditable(false);
-				gridBagContraints.fill = GridBagConstraints.VERTICAL;
 				gridBagContraints.gridx = column;
 				gridBagContraints.gridy = row;
-                //add(thisCell);
 				add(thisCell, gridBagContraints);
             }
         }
@@ -378,10 +357,10 @@ class SpreadsheetComponent extends JComponent {
          *  Figure out what should be displayed for
          *  each text field.
          */
-        for (row = 0; (row < gridHeight); ++row) {
+        for (row = 1; (row < gridHeight); ++row) {
             int         column;
 
-            for (column = 0; (column < gridWidth); ++column) {
+            for (column = 1; (column < gridWidth); ++column) {
 				Cell	thisCell;
 
 				thisCell = grid[row][column];
