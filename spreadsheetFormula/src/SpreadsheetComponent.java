@@ -177,6 +177,7 @@ class SpreadsheetComponent extends JComponent {
                      *  their changes.
                      */
 					Formula.setDocument(lastEditable.getDocument());
+					Formula.setEditable(false);
                     lastEditable.setEditable(false);
                     lastEditable = null;
                     repaint();
@@ -244,6 +245,7 @@ class SpreadsheetComponent extends JComponent {
 					 *  Close that one accepting their changes.
 					 */
 	                lastEditable.setEditable(false);
+					Formula.setEditable(false);
 	                repaint();
 				} else {
 					/*
@@ -262,6 +264,8 @@ class SpreadsheetComponent extends JComponent {
             thisCell = grid[row][column];
             preedittedContents = thisCell.getText();
             lastEditable = thisCell;
+			Formula.setDocument(lastEditable.getDocument());
+			Formula.setEditable(true);
             lastEditable.setText(thisCell.getText());
             lastEditable.setEditable(true);
         }
