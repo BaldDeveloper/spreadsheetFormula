@@ -289,16 +289,30 @@ class SpreadsheetComponent extends JComponent {
 
 
 		// ToDo: Create a row of blank JLabels
-		for (column = 0; (column < gridWidth); ++column) {
-			gridBagContraints.gridx = column;
-			gridBagContraints.gridy = 0;
-			add(new JLabel(" "), gridBagContraints);
-		}
+//		for (column = 0; (column < gridWidth); ++column) {
+//			gridBagContraints.gridx = column;
+//			gridBagContraints.gridy = 0;
+//			add(new JLabel(" "), gridBagContraints);
+//		}
+
+		// ToDo: Add formula jtext
+		Cell	formulaCell;
+		formulaCell = new Cell("", ((gridWidth-1) * 10));
+		grid[0][0] = formulaCell;
+		formulaCell.addMouseListener(new MouseHandler(0,0));
+		formulaCell.addKeyListener(gridKeyHandler);
+		formulaCell.setFont(monospacedFont);
+		formulaCell.setEditable(false);
+		gridBagContraints.gridx = 0;
+		gridBagContraints.gridy = 0;
+		gridBagContraints.gridwidth = gridWidth;
+		add(formulaCell, gridBagContraints);
 
 
 		// ToDo: Handles alphabet across the top
 		gridBagContraints.gridx = 0;
 		gridBagContraints.gridy = 1;
+		gridBagContraints.gridwidth = 1;
 		add(new JLabel(" "), gridBagContraints);
 
 		// ToDo: Handles alphabet across the top gridwith - 9
@@ -308,6 +322,7 @@ class SpreadsheetComponent extends JComponent {
 			columnLabel[column].setFont(monospacedFont);
 			gridBagContraints.gridx = column;
 			gridBagContraints.gridy = 1;
+			gridBagContraints.gridwidth = 1;
 			add(columnLabel[column], gridBagContraints);
 		}
 
@@ -322,6 +337,7 @@ class SpreadsheetComponent extends JComponent {
 			rowLabel[row].setFont(monospacedFont);
 			gridBagContraints.gridx = 0;
 			gridBagContraints.gridy = row+1;
+			gridBagContraints.gridwidth = 1;
 			add(rowLabel[row], gridBagContraints);
 
 			// ToDo: Start of empty grid
@@ -340,6 +356,7 @@ class SpreadsheetComponent extends JComponent {
                 thisCell.setEditable(false);
 				gridBagContraints.gridx = column;
 				gridBagContraints.gridy = row+1;
+				gridBagContraints.gridwidth = 1;
 				add(thisCell, gridBagContraints);
             }
         }
