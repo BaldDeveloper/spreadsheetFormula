@@ -22,26 +22,27 @@ class SpreadsheetComponent extends JComponent {
     private Cell		lastEditable;
     private String      preedittedContents;
     private Cell		grid[][];
+	private Cell		Formula;
     private JLabel		rowLabel[];
     private JLabel		columnLabel[];
+	private DefaultCaret caret;
+	private Document	savedDocument;
 
-	private class Formula extends JTextField {
-		private Document documentValue;
-
-		public Formula(Document name, int fieldWidth) {
-			super(fieldWidth);
-
-			documentValue = name;
-			this.setDocument(name);
-		}
-	}
+//	private class Formula extends Cell {
+//		private Document	savedDocument;
+//
+//		public Formula(String name, int fieldWidth) {
+//			super(name,fieldWidth);
+//
+//		}
+//
+//	}
 
 
     private class Cell extends JTextField
     {
 		private String		name;
 		private Variable	value;
-		private DefaultCaret caret;
 
 		public Cell(String name, int fieldWidth)
 		{
@@ -163,12 +164,9 @@ class SpreadsheetComponent extends JComponent {
         public void keyTyped(KeyEvent event)
         {
             int         character;
-//            String      key;
-
             character = event.getKeyChar();
-//            key = "" + character;
+
             if (character == KeyEvent.VK_ENTER) {
-//                key = "ENTER";
                 /*
                  *  The user pressed the ENTER key.
                  */
@@ -178,6 +176,7 @@ class SpreadsheetComponent extends JComponent {
                      *  They were editing a text field.  Accept
                      *  their changes.
                      */
+					Formula.setDocument(lastEditable.getDocument());
                     lastEditable.setEditable(false);
                     lastEditable = null;
                     repaint();
@@ -225,7 +224,7 @@ class SpreadsheetComponent extends JComponent {
          */
         public void mouseClicked(MouseEvent event)
         {
-			Cell	thisCell;
+			Cell thisCell;
 
             if (lastEditable == grid[row][column]) {
                 /*
@@ -259,6 +258,7 @@ class SpreadsheetComponent extends JComponent {
              *  Also, remember the contents before they make
              *  changes.
              */
+
             thisCell = grid[row][column];
             preedittedContents = thisCell.getText();
             lastEditable = thisCell;
@@ -291,7 +291,7 @@ class SpreadsheetComponent extends JComponent {
         // setLayout(new GridLayout(gridWidth + 1, gridHeight + 1));
 
 		setLayout(new GridBagLayout());
-		GridBagConstraints gridBagContraints = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
         grid = new Cell[gridWidth][gridHeight];
         rowLabel = new JLabel[gridHeight];
@@ -304,42 +304,37 @@ class SpreadsheetComponent extends JComponent {
         gridKeyHandler = new GridKeyHandler();
 
 
-		// ToDo: Create a row of blank JLabels
-//		for (column = 0; (column < gridWidth); ++column) {
-//			gridBagContraints.gridx = column;
-//			gridBagContraints.gridy = 0;
-//			add(new JLabel(" "), gridBagContraints);
-//		}
-
 		// ToDo: Add formula jtext
-		Cell	formulaCell;
-		formulaCell = new Cell("", ((gridWidth-1) * 10));
-		grid[0][0] = formulaCell;
-		formulaCell.addMouseListener(new MouseHandler(0,0));
-		formulaCell.addKeyListener(gridKeyHandler);
-		formulaCell.setFont(monospacedFont);
-		formulaCell.setEditable(false);
-		gridBagContraints.gridx = 0;
-		gridBagContraints.gridy = 0;
-		gridBagContraints.gridwidth = gridWidth;
-		add(formulaCell, gridBagContraints);
+
+		Formula = new Cell ("Formula", ((gridWidth-1) * 10));
+		grid[0][0] = Formula;
+		Formula.addMouseListener(new MouseHandler(0,0));
+		Formula.addKeyListener(gridKeyHandler);
+		Formula.setFont(monospacedFont);
+		Formula.setEditable(false);
+		caret = (DefaultCaret)Formula.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.gridwidth = gridWidth;
+		add(Formula, gridBagConstraints);
 
 
 		// ToDo: Handles alphabet across the top
-		gridBagContraints.gridx = 0;
-		gridBagContraints.gridy = 1;
-		gridBagContraints.gridwidth = 1;
-		add(new JLabel(" "), gridBagContraints);
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = 1;
+		add(new JLabel(" "), gridBagConstraints);
 
 		// ToDo: Handles alphabet across the top gridwith - 9
         for (column = 1; (column < gridWidth); ++column) {
 			columnLabel[column] = new JLabel("" + (char)('A' + column-1),
 											 SwingConstants.CENTER);
 			columnLabel[column].setFont(monospacedFont);
-			gridBagContraints.gridx = column;
-			gridBagContraints.gridy = 1;
-			gridBagContraints.gridwidth = 1;
-			add(columnLabel[column], gridBagContraints);
+			gridBagConstraints.gridx = column;
+			gridBagConstraints.gridy = 1;
+			gridBagConstraints.gridwidth = 1;
+			add(columnLabel[column], gridBagConstraints);
 		}
 
         /*
@@ -351,10 +346,10 @@ class SpreadsheetComponent extends JComponent {
 			name = "" + (row);
 			rowLabel[row] = new JLabel(name, SwingConstants.CENTER);
 			rowLabel[row].setFont(monospacedFont);
-			gridBagContraints.gridx = 0;
-			gridBagContraints.gridy = row+1;
-			gridBagContraints.gridwidth = 1;
-			add(rowLabel[row], gridBagContraints);
+			gridBagConstraints.gridx = 0;
+			gridBagConstraints.gridy = row+1;
+			gridBagConstraints.gridwidth = 1;
+			add(rowLabel[row], gridBagConstraints);
 
 			// ToDo: Start of empty grid
             for (column = 1; (column < gridWidth); ++column) {
@@ -370,12 +365,13 @@ class SpreadsheetComponent extends JComponent {
                 thisCell.addKeyListener(gridKeyHandler);
                 thisCell.setFont(monospacedFont);
                 thisCell.setEditable(false);
-				thisCell.caret = (DefaultCaret)thisCell.getCaret();
-				thisCell.caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-				gridBagContraints.gridx = column;
-				gridBagContraints.gridy = row+1;
-				gridBagContraints.gridwidth = 1;
-				add(thisCell, gridBagContraints);
+				savedDocument = thisCell.getDocument();
+				caret = (DefaultCaret)thisCell.getCaret();
+				caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+				gridBagConstraints.gridx = column;
+				gridBagConstraints.gridy = row+1;
+				gridBagConstraints.gridwidth = 1;
+				add(thisCell, gridBagConstraints);
             }
         }
     }
