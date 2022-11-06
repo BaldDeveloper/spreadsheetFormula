@@ -288,10 +288,17 @@ class SpreadsheetComponent extends JComponent {
         gridKeyHandler = new GridKeyHandler();
 
 
+		// ToDo: Create a row of blank JLabels
+		for (column = 0; (column < gridWidth); ++column) {
+			gridBagContraints.gridx = column;
+			gridBagContraints.gridy = 0;
+			add(new JLabel(" "), gridBagContraints);
+		}
+
 
 		// ToDo: Handles alphabet across the top
 		gridBagContraints.gridx = 0;
-		gridBagContraints.gridy = 0;
+		gridBagContraints.gridy = 1;
 		add(new JLabel(" "), gridBagContraints);
 
 		// ToDo: Handles alphabet across the top gridwith - 9
@@ -300,7 +307,7 @@ class SpreadsheetComponent extends JComponent {
 											 SwingConstants.CENTER);
 			columnLabel[column].setFont(monospacedFont);
 			gridBagContraints.gridx = column;
-			gridBagContraints.gridy = 0;
+			gridBagContraints.gridy = 1;
 			add(columnLabel[column], gridBagContraints);
 		}
 
@@ -314,7 +321,7 @@ class SpreadsheetComponent extends JComponent {
 			rowLabel[row] = new JLabel(name, SwingConstants.CENTER);
 			rowLabel[row].setFont(monospacedFont);
 			gridBagContraints.gridx = 0;
-			gridBagContraints.gridy = row;
+			gridBagContraints.gridy = row+1;
 			add(rowLabel[row], gridBagContraints);
 
 			// ToDo: Start of empty grid
@@ -332,7 +339,7 @@ class SpreadsheetComponent extends JComponent {
                 thisCell.setFont(monospacedFont);
                 thisCell.setEditable(false);
 				gridBagContraints.gridx = column;
-				gridBagContraints.gridy = row;
+				gridBagContraints.gridy = row+1;
 				add(thisCell, gridBagContraints);
             }
         }
