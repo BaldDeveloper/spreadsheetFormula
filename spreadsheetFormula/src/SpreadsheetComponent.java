@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.font.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
+
 import expressions.*;
 
 /**
@@ -22,10 +25,23 @@ class SpreadsheetComponent extends JComponent {
     private JLabel		rowLabel[];
     private JLabel		columnLabel[];
 
+	private class Formula extends JTextField {
+		private Document documentValue;
+
+		public Formula(Document name, int fieldWidth) {
+			super(fieldWidth);
+
+			documentValue = name;
+			this.setDocument(name);
+		}
+	}
+
+
     private class Cell extends JTextField
     {
 		private String		name;
 		private Variable	value;
+		private DefaultCaret caret;
 
 		public Cell(String name, int fieldWidth)
 		{
@@ -354,6 +370,8 @@ class SpreadsheetComponent extends JComponent {
                 thisCell.addKeyListener(gridKeyHandler);
                 thisCell.setFont(monospacedFont);
                 thisCell.setEditable(false);
+				thisCell.caret = (DefaultCaret)thisCell.getCaret();
+				thisCell.caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 				gridBagContraints.gridx = column;
 				gridBagContraints.gridy = row+1;
 				gridBagContraints.gridwidth = 1;
