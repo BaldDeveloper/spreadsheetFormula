@@ -195,6 +195,7 @@ class SpreadsheetComponent extends JComponent {
                      */
                     thisCell = lastEditable;
                     lastEditable = null;
+					Formula.setEditable(false);
                     thisCell.setEditable(false);
 					thisCell.setText(preedittedContents);
                 }
